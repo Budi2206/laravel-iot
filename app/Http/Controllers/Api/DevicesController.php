@@ -3,8 +3,9 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Models\Devices;
 use Illuminate\Http\Request;
+use App\Models\Devices;
+use App\Models\SensorDevice;
 
 class DevicesController extends Controller
 {
@@ -14,7 +15,8 @@ class DevicesController extends Controller
     public function index()
     {
         $devices = Devices::all();
-        // return view('dashboard.index', compact('devices'));
+        $sensor = SensorDevice::all();
+        // return view('dashboard.index', compact('devices', 'sensor'));
         return response()->json([
             'status' => true,
             'message' => 'Data Dapat Diterima',
@@ -31,13 +33,22 @@ class DevicesController extends Controller
             'device_name' => 'required',
             'room' => 'required'
         ]);
+        
+        $device = Devices::create($validated);
 
-        Devices::create($validated);
+        $sensorDevice = $device->sensor()->create([
+        'device_id' => $device->id,
+        'temperature' => 0,
+        'humidity' => 0,
+        'status_relay' => false,
+        'update' => now()
+        ]);
 
         return response()->json([
             'status' => true,
             'message' => 'Data Sudah Dibuat',
-            'data' => $validated
+            'device' => $validated,
+            'sensor' => $sensorDevice
         ], 201);
     }
 
@@ -47,10 +58,12 @@ class DevicesController extends Controller
     public function show($device_id)
     {
         $device = Devices::find($device_id);
+        $sensor = SensorDevice::find($device_id);
         return response()->json([
             'status' => true,
             'message' => 'Data Dapat Ditampilkan',
-            'data' => $device
+            'device' => $device,
+            'sensor' => $sensor
         ],201);
     }
 

@@ -14,6 +14,6 @@ class Devices extends Model
 
     public function sensor():HasOne
     {
-        return $this->HasOne(SensorDevice::class) ;
+        return $this->HasOne(SensorDevice::class, 'device_id') ;
     }
 }

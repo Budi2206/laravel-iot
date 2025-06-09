@@ -17,10 +17,10 @@ return new class extends Migration
              table: 'devices', 
              indexName: 'posts_device_id'
             );
-            $table->float('temperature', 5, 2);
-            $table->float('humidity', 5, 2);
+            $table->float('temperature', 5, 2)->default(0);
+            $table->float('humidity', 5, 2)->default(0);
             $table->boolean('status_relay')->default(false);
-            $table->time('update_at');
+            $table->timestamp('update');
             $table->timestamps();
         });
     }
